@@ -2,7 +2,7 @@
 
 = Introduction =
 
-This page explains how the application based on ReinCRUD works.
+This page explains how the [http://www.acoveo.com/reincrudexample/vaadintest example application] based on ReinCRUD works.
 
 
 = Details =
@@ -89,3 +89,17 @@ Let's go from top to bottom. The first annotation you see is *@!UiName(name="Per
 The *@!UiForm* annotation is used to customise the behaviour of the ReinCRUD Form component for this entity. In this case we use it to assign an _IFieldModifier_ implementation by setting _fieldModifier=!PersonFieldModifier.class_. An _IFieldModifier_ is triggered whenever the property data source of a Form, or the value of an attribute marked with *@!UiProperty(triggersFieldModifier=true)* changes. Field modifiers are useful to show/hide parts of a Form depending on the value of specific properties. In the example it is used to hide attributes depending on the type of the person entity (physical or legal).
 
 The next annotation is *@!UiProperty(globallyHidden=true)* and it is placed on the *@Id* annotated attribute. The !UiProperty annotation is used to customise the behaviour of UI components which are used to edit the respective attribute. In this case we set _globallyHidden=true_ which causes the attribute to be ignored in all ReinCRUD components. Moving to the next annotation, you can see that we set _triggersFieldModifier=true_. As a result, the _IFieldModifier_ which is attached to the Person class using the *@!UiForm* annotation is triggered whenever the value of the _type_ attribute changes.
+
+The title attribute is annotated with *@!UiProperty(inList=true, order=100, uiToString = {@!UiToString(order = 100)})*. This showcases a few more important attributes of the _!UiProperty_ annotation. The _inList_ attribute defines whether the annotated attribute is displayed in a column in the ReinCRUD Form component. It is set to _false_ by default, as you we assumed that you would like to show only a very few column for each entity. The reason for that is that you should create database *table indices* for those columns, as the List component allows the user to sort by the displayed columns. The _order_ attribute defines the ordering of the attribute in the List and Form components. The higher this number, the further up/left the attribute is shown. The _uiToString_ attribute is discussed below.
+
+The *@!UiToString(order = 80, before = " ")* which is placed within the _UiProperty.uiToString_ array (in this case on the _name_ attribute) can be used to define the way this entity is displayed when converted to a string. We do not replace the toString() method of your entity, but rather use a helper class. The annotation can be used to specify the _order_ of the attributes used to define the string representation and you can define a String to be placed _before_ and _after_ the attribute. The _before_ and _after_ strings are not used if the attribute is null.
+
+The second annotation used on the _name_ attribute is
+{{{
+@UiAutocomplete(entity = Forenames.class, sourceAttribute = Forenames.P_NAME, 
+		copyAttributes = { 
+			@Copy(sourceAttribute = Forenames.P_SEX, targetAttribute = Person.P_SEX) 
+		}
+	)
+}}}
+The _!UiAutocomplete_ annotation is used to define that the user should be presented with suggested values for this attribute. In order to use this feature, you have to enable the use of the custom ReinCRUD client side GWT widgets, by setting *org.acoveo.reincrud.customGwtWidgetsEnabled=true* in a _config.properties_ file on your classpath and you have to use a custom widgetset, which inherits from *org.acoveo.reincrud.gwt.widgetset.ReinCrudWidgetset*. The _!UiAutocomplete_ annotation defines which _entity_ class is used to query the database for suggested values and the _sourceAttribute_ from the _entity_ class which is used to set the value of the annotated attribute. In addition to that the _copyAttributes_ array can be used to specify an unlimited number of additional attributes to copy from the _entity_ class.
