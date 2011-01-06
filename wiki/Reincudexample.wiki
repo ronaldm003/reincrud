@@ -77,7 +77,6 @@ public class Person {
 	protected String letterOpening2;
 
 	@OneToMany(mappedBy="owner")
-	@UiProperty
 	protected Set<Job> job;
 
 	... accessor methods ...
@@ -92,7 +91,7 @@ The next annotation is *@!UiProperty(globallyHidden=true)* and it is placed on t
 
 The title attribute is annotated with *@!UiProperty(inList=true, order=100, uiToString = {@!UiToString(order = 100)})*. This showcases a few more important attributes of the _!UiProperty_ annotation. The _inList_ attribute defines whether the annotated attribute is displayed in a column in the ReinCRUD Form component. It is set to _false_ by default, as you we assumed that you would like to show only a very few column for each entity. The reason for that is that you should create database *table indices* for those columns, as the List component allows the user to sort by the displayed columns. The _order_ attribute defines the ordering of the attribute in the List and Form components. The higher this number, the further up/left the attribute is shown. The _uiToString_ attribute is discussed below.
 
-The *@!UiToString(order = 80, before = " ")* which is placed within the _UiProperty.uiToString_ array (in this case on the _name_ attribute) can be used to define the way this entity is displayed when converted to a string. We do not replace the toString() method of your entity, but rather use a helper class. The annotation can be used to specify the _order_ of the attributes used to define the string representation and you can define a String to be placed _before_ and _after_ the attribute. The _before_ and _after_ strings are not used if the attribute is null.
+The *@!UiToString(order = 80, before = " ")* which is placed within the _!UiProperty.uiToString_ array (in this case on the _name_ attribute) can be used to define the way this entity is displayed when converted to a string. We do not replace the toString() method of your entity, but rather use a helper class. The annotation can be used to specify the _order_ of the attributes used to define the string representation and you can define a String to be placed _before_ and _after_ the attribute. The _before_ and _after_ strings are not used if the attribute is null.
 
 The second annotation used on the _name_ attribute is
 {{{
@@ -102,4 +101,107 @@ The second annotation used on the _name_ attribute is
 		}
 	)
 }}}
-The _!UiAutocomplete_ annotation is used to define that the user should be presented with suggested values for this attribute. In order to use this feature, you have to enable the use of the custom ReinCRUD client side GWT widgets, by setting *org.acoveo.reincrud.customGwtWidgetsEnabled=true* in a _config.properties_ file on your classpath and you have to use a custom widgetset, which inherits from *org.acoveo.reincrud.gwt.widgetset.ReinCrudWidgetset*. The _!UiAutocomplete_ annotation defines which _entity_ class is used to query the database for suggested values and the _sourceAttribute_ from the _entity_ class which is used to set the value of the annotated attribute. In addition to that the _copyAttributes_ array can be used to specify an unlimited number of additional attributes to copy from the _entity_ class.
+The _!UiAutocomplete_ annotation is used to define that the user should be presented with suggested values for this attribute. In order to use this feature, you have to enable the use of the custom ReinCRUD client side GWT widgets, by setting *org.acoveo.reincrud.customGwtWidgetsEnabled=true* in a _config.properties_ file on your classpath and you have to use a custom widgetset, which inherits from *org.acoveo.reincrud.gwt.widgetset.!ReinCrudWidgetset*. The _!UiAutocomplete_ annotation defines which _entity_ class is used to query the database for suggested values and the _sourceAttribute_ from the _entity_ class which is used to set the value of the annotated attribute. In addition to that the _copyAttributes_ array can be used to specify an unlimited number of additional attributes to copy from the _entity_ class.
+
+The rest of the annotations should now all be familiar if you read the paragraphs above.
+
+Unfortunately ReinCRUD currently does not support @!OneToMany, @!ManyToMany and @!ManyToAny associations. It does however, support @!ManyToOne associations, so you can choose the associated entity on the other side of a @!OneToMany relationship. In our case this means that you can edit the Job entity and choose the associated Person there.
+
+== Other entities ==
+The other entity classes Job and Forenames do not bring anything new to the table.
+
+== Spring configuration ==
+ReinCRUD needs just a bit of Spring configuration to work. In our example this boils down to:
+{{{
+@Configuration
+@Import(value= {
+		org.acoveo.reincrud.SpringConfiguration.class,
+		SpringConfigurationEnv.class
+})
+public class SpringConfiguration {
+	@Autowired ApplicationContext appContext;
+	
+	@Bean
+	@Scope(value = "request")
+	public IEntityService service() {
+		return new ServiceImpl();
+	}
+	
+	@Bean
+	public MessageSource messageSource() {
+		ResourceBundleMessageSource msgSource = new ResourceBundleMessageSource();
+		msgSource.setBasename("org.acoveo.dao.messages");
+		return msgSource;
+	}
+	
+	@Bean
+	@ReinCrudFactoryQualifier
+	public IReinCrudFactory<Person> reinCrudFactoryPerson() {
+		return new ReinCrudFactory<Person>(Person.class, null);
+	}
+	
+	@Bean
+	@ReinCrudFactoryQualifier
+	public IReinCrudFactory<Forenames> reinCrudFactoryForenames() {
+		return new ReinCrudFactory<Forenames>(Forenames.class, null);
+	}
+	
+	@Bean
+	@ReinCrudFactoryQualifier
+	public IReinCrudFactory<Job> reinCrudFactoryJob() {
+		return new ReinCrudFactory<Job>(Job.class, null);
+	}
+	
+	@Bean
+	@Scope(value = "prototype")
+	public PersonFieldModifier personFieldModifier(Class<?> entityType) {
+		return new PersonFieldModifier();
+	}
+}
+
+@Configuration
+public class SpringConfigurationEnv {
+	@Bean
+	@Scope(value="request")
+	public HibernateTransactionManager transactionManager() {
+		HibernateTransactionManager tManager = new HibernateTransactionManager();
+		tManager.setSessionFactory(sessionFactory().getObject());
+		return tManager;
+	}
+	
+	@Bean
+	public AnnotationSessionFactoryBean sessionFactory() {
+		AnnotationSessionFactoryBean sf = new AnnotationSessionFactoryBean();
+		sf.setDataSource(myJndiDataSource());
+		Class<?>[] classes = {
+			Person.class,
+			Tag.class,
+			Job.class,
+			Forenames.class,
+		};
+		sf.setAnnotatedClasses(classes);
+		Properties props = new Properties();
+		props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		props.setProperty("hibernate.show_sql", "true");
+		// Enable to upgrade schema
+		props.setProperty("hibernate.hbm2ddl.auto", "update");
+		sf.setHibernateProperties(props);
+		return sf;
+	}
+	
+	@Bean
+	public DataSource myJndiDataSource() {
+		try {
+			InitialContext ic = new InitialContext();
+			return (DataSource)ic.lookup("java:comp/env/jdbc/servlettestDB");
+		}catch (NamingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+
+}
+}}}
+
+Most importantly ReinCRUD needs one configured bean per entity class. This bean has to qualified with the *@!ReinCrudFactoryQualifier*. In addition to that, a bean implementing *IEntityService* (a default implementation is provided), a *MessageSource* bean for I18N and the standard Spring hibernate setup, consisting of a *SessionFactory* and a *TransactionManager* is all that is required.
