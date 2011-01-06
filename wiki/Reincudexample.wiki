@@ -1,4 +1,5 @@
 #summary The example explained
+#labels Featured,Phase-Deploy
 
 = Introduction =
 
@@ -205,4 +206,4 @@ public class SpringConfigurationEnv {
 }
 }}}
 
-Most importantly ReinCRUD needs one configured bean per entity class. This bean has to qualified with the *@!ReinCrudFactoryQualifier*. In addition to that, a bean implementing *IEntityService* (a default implementation is provided), a *MessageSource* bean for I18N and the standard Spring hibernate setup, consisting of a *SessionFactory* and a *TransactionManager* is all that is required.
+Most importantly ReinCRUD needs one configured bean per entity class. This bean has to qualified with the *@!ReinCrudFactoryQualifier*. In addition to that, a bean implementing *IEntityService* (a default implementation is provided), a *!MessageSource* bean for I18N and the standard Spring hibernate setup, consisting of a *!SessionFactory* and a *!TransactionManager* is all that is required.
