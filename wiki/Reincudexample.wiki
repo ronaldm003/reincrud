@@ -1,0 +1,91 @@
+#summary The example explained
+
+= Introduction =
+
+This page explains how the application based on ReinCRUD works.
+
+
+= Details =
+
+== The Person entity ==
+ReinCRUD uses convention over configuration and chooses sane defaults for your entities. Thus the most simple definition does not require any ReinCRUD specific annotations at all. As that would be a bit boring, the reincrudexample app contains a real-life example.
+
+Here is the Person class:
+{{{
+@Entity
+@UiName(name="Person.uiName")
+@UiForm(fieldModifier=PersonFieldModifier.class)
+public class Person {
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@UiProperty(globallyHidden=true)
+	protected long id;
+	
+	@Enumerated(EnumType.STRING)
+	@UiProperty(triggersFieldModifier=true)
+	protected PersonType type = PersonType.PHYSICAL;
+	
+	protected String reference;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable=false)
+	protected PersonState state = PersonState.DRAFT;
+
+	@UiProperty(inList=true, order=100, uiToString = {
+		@UiToString(order = 100)
+	})
+	@Size(max=15)
+	protected String title;
+
+	@Size(max=15)
+	protected String honTitle;
+	
+	@Size(max=15)
+	protected String adminTitle;
+	
+	@UiProperty(inList=true, order=80, uiToString = {
+		@UiToString(order = 80, before = " ")
+	})
+	protected String surname;
+
+	@UiProperty(inList = true, order = 90, uiToString = {
+		@UiToString(order = 90, before = " ")
+	})
+	@UiAutocomplete(entity = Forenames.class, sourceAttribute = Forenames.P_NAME, 
+		copyAttributes = { 
+			@Copy(sourceAttribute = Forenames.P_SEX, targetAttribute = Person.P_SEX) 
+		}
+	)
+	protected String name;
+	
+	@UiProperty(inList=true)
+	@Enumerated(EnumType.STRING)
+	protected Sex sex;
+	
+	protected String companyName1;
+	
+	protected String companyName2;
+	
+	protected Date birthDate;
+	
+	@UiProperty(inList=true)
+	protected String socialSecNumber;
+	
+	protected String foreignSocialSecNumber;
+	
+	protected String letterOpening;
+	
+	protected String letterOpening2;
+
+	@OneToMany(mappedBy="owner")
+	@UiProperty
+	protected Set<Job> job;
+
+	... accessor methods ...
+}
+}}}
+
+Let's go from top to bottom. The first annotation you see is *@UiName(name="Person.uiName")*. The UiName annotation is used to define the string which is used in the user interface to name you entity or property. It can be used with internationalisation (I18N lookup) or without. If I18N is enabled the _name_ and _description_ will be interpreted as keys for a message lookup using a *MessageSource*. Using I18N is the default and you can set _noi18n=false_ to disable it. If I18N lookup is disable the strings you set are directly used as captions and descriptions in the user interface.
+
+The *@UiForm* annotation is used to customise the behaviour of the ReinCRUD Form component for this entity. In this case we use it to assign an _IFieldModifier_ implementation by setting _fieldModifier=PersonFieldModifier.class_. An _IFieldModifier_ is triggered whenever the property data source of a Form, or the value of an attribute marked with *@UiProperty(triggersFieldModifier=true)* changes. Field modifiers are useful to show/hide parts of a Form depending on the value of specific properties. In the example it is used to hide attributes depending on the type of the person entity (physical or legal).
+
+The next annotation is *@UiProperty(globallyHidden=true)* and it is placed on the *@Id* annotated attribute. The UiProperty annotation is used to customise the behaviour of UI components which are used to edit the respective attribute. In this case we set _globallyHidden=true_ which causes the attribute to be ignored in all ReinCRUD components. Moving to the next annotation, you can see that we set _triggersFieldModifier=true_. As a result, the _IFieldModifier_ which is attached to the Person class using the *@UiForm* annotation is triggered whenever the value of the _type_ attribute changes.
