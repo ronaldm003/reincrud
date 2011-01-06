@@ -6,6 +6,7 @@ This page explains how the [http://www.acoveo.com/reincrudexample/vaadintest exa
 
 
 = Details =
+The ReinCRUD example does not contain a single line of business logic. The only code required are the definitions of the entity classes. The rest is just a bit of Spring configuration (in our case using Spring 3.0 [http://static.springsource.org/spring/docs/3.0.x/reference/beans.html#beans-java Java Config]).
 
 == The Person entity ==
 ReinCRUD uses convention over configuration and chooses sane defaults for your entities. Thus the most simple definition does not require any ReinCRUD specific annotations at all. As that would be a bit boring, the reincrudexample app contains a real-life example.
