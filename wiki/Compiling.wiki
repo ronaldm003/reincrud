@@ -63,6 +63,6 @@ In order to be able to run/debug the web application, define a new tomcat 6 inst
 			username="vaadintest" validationQuery="SELECT 1"/>
 }}}
 
-within the _GlobalNamingResources_ tag of server.xml.
+within the _!GlobalNamingResources_ tag of server.xml.
 
 Remember that the server.xml is in the _Servers_ project within the eclipse workspace!
