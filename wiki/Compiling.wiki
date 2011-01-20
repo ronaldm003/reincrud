@@ -1,5 +1,5 @@
+#summary Explains how to checkout and compile the source
 #labels Phase-Implementation
-#Explains how to checkout and compile the source
 
 = Introduction =
 
