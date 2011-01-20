@@ -28,3 +28,10 @@ mvn eclipse:eclipse
 Now fire-up an eclipse installation with the [http://www.eclipse.org/webtools/ WTP plugin] installed, specify the workspace directory you have just created as the workspace and import the two projects (choose _Existing projects into workspace_).
 
 Define a new tomcat 6 instance, copy the [http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.13/mysql-connector-java-5.1.13.jar mysql-connector-java-5.1.13-bin.jar] into the _lib_ directory of your tomcat installation and have a look at _reincrudexample/src/main/webapp/META-INF/context.xml_ which explains how to setup your JNDI datasource. Remember that the server.xml is in the _Servers_ project within the eclipse workspace!
+
+FYI, you can setup a matching mysql database as follows:
+{{{
+sudo mysqladmin create vaadintest
+sudo mysql
+> grant all privileges on vaadintest.* to 'vaadintest'@'localhost' Identified by 'vaadintest';
+}}}
