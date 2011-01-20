@@ -9,8 +9,8 @@ reinCRUD is built using maven2, so all you need is a [http://maven.apache.org/ m
 = Compiling =
 
 There are currently two projects:
-* reincrud
-* reincrudexample
+  * reincrud
+  * reincrudexample
 
 If you would like to hack on reinCRUD, you should build both projects. Do the following:
 
