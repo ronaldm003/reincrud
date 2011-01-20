@@ -1,0 +1,30 @@
+#labels Phase-Implementation
+#Explains how to checkout and compile the source
+
+= Introduction =
+
+reinCRUD is built using maven2, so all you need is a [http://maven.apache.org/ maven2] installation.
+
+
+= Compiling =
+
+There are currently two projects:
+* reincrud
+* reincrudexample
+
+If you would like to hack on reinCRUD, you should build both projects. Do the following:
+
+{{{
+mkdir workspace
+cd workspace
+svn co https://acoveo.com/svnroot/business/public/trunk/reincrud
+svn co https://acoveo.com/svnroot/business/public/trunk/reincrudexample
+cd reincrud
+mvn eclipse:eclipse
+cd ../reincrudexample
+mvn eclipse:eclipse
+}}}
+
+Now fire-up an eclipse installation with the WTP plugin installed, specify the workspace directory you have just created as the workspace and import the two projects (choose _Existing projects into workspace_).
+
+Define a new tomcat 6 instance, copy the [http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.13/mysql-connector-java-5.1.13.jar mysql-connector-java-5.1.13-bin.jar] into the _lib_ directory of your tomcat installation and have a look at _reincrudexample/src/main/webapp/META-INF/context.xml_ which explains how to setup your JNDI datasource. Remember that the server.xml is in the _Servers_ project within the eclipse workspace!
