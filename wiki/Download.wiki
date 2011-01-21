@@ -20,3 +20,26 @@ or from the [http://www.vaadin.com vaadin] [http://vaadin.com/directory#addon/re
    <url>http://maven.vaadin.com/vaadin-addons</url>
 </repository>
 }}}
+
+= New project =
+If you would like to start a new project based on reinCRUD, you can use our maven archetype to create a new project named _reincrudproject_ in your current directory:
+
+{{{
+mvn archetype:generate -DarchetypeCatalog=http://acoveo.com/maven2/repo/archetype-catalog.xml -DgroupId=org.acoveo -DartifactId=reincrudproject -Dversion=1.0-SNAPSHOT
+}}
+
+The example project you have just created assumes that there is a mysql database named _vaadintest_ on your localhost. You have to create the DB before running the project:
+
+{{{
+sudo mysqladmin create vaadintest
+echo "grant all privileges on vaadintest.* to 'vaadintest'@'localhost' Identified by 'vaadintest';" | mysql -u root -p
+}}}
+
+Now your project is set-up and you can compile and run a Tomcat instance with your new project using maven:
+
+{{{
+cd reincrudproject
+mvn install cargo:start
+}}}
+
+If Tomcat came up fine, you can now visit [http://localhost:8080/reincrudproject/vaadintest] and should see your reinCRUD application.
