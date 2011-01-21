@@ -26,7 +26,7 @@ If you would like to start a new project based on reinCRUD, you can use our mave
 
 {{{
 mvn archetype:generate -DarchetypeCatalog=http://acoveo.com/maven2/repo/archetype-catalog.xml -DgroupId=org.acoveo -DartifactId=reincrudproject -Dversion=1.0-SNAPSHOT
-}}
+}}}
 
 The example project you have just created assumes that there is a mysql database named _vaadintest_ on your localhost. You have to create the DB before running the project:
 
