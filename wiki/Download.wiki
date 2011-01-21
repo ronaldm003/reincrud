@@ -3,16 +3,17 @@
 
 = Download =
 
-You can download the reincrud release from our maven2 repository at:
+ReinCRUD is available from two repositories. You can add one of them to your pom.xml and then add the following dependency:
 
 {{{
-<repository>
-   <id>acoveo</id>
-   <url>http://www.acoveo.com/maven2/repo</url>
-</repository>
+<dependency>
+  <groupId>org.acoveo</groupId>
+  <artifactId>reincrud</artifactId>
+  <version>1.1</version>
+</dependency>
 }}}
 
-or from the [http://www.vaadin.com vaadin] [http://vaadin.com/directory#addon/reincrud addon site] repository:
+From the [http://www.vaadin.com vaadin] [http://vaadin.com/directory#addon/reincrud addon site] repository:
 
 {{{
 <repository>
@@ -21,6 +22,16 @@ or from the [http://www.vaadin.com vaadin] [http://vaadin.com/directory#addon/re
 </repository>
 }}}
 
+Or our corporate maven repository:
+
+{{{
+<repository>
+   <id>acoveo</id>
+   <url>http://www.acoveo.com/maven2/repo</url>
+</repository>
+}}}
+
+
 = New project =
 If you would like to start a new project based on reinCRUD, you can use our maven archetype to create a new project named _reincrudproject_ in your current directory:
 
@@ -28,7 +39,7 @@ If you would like to start a new project based on reinCRUD, you can use our mave
 mvn archetype:generate -DarchetypeCatalog=http://acoveo.com/maven2/repo/archetype-catalog.xml -DgroupId=org.acoveo -DartifactId=reincrudproject -Dversion=1.0-SNAPSHOT
 }}}
 
-The example project you have just created assumes that there is a mysql database named _vaadintest_ on your localhost. You have to create the DB before running the project:
+The example project you have just created assumes that there is a mysql database named _vaadintest_ on your localhost. You have to create the DB before running the project (change the mysql user (root) according to your environment and/or remove the _-p_ option if you do not have a password set):
 
 {{{
 sudo mysqladmin create vaadintest
@@ -43,3 +54,12 @@ mvn install cargo:start
 }}}
 
 If Tomcat came up fine, you can now visit [http://localhost:8080/reincrudproject/vaadintest] and should see your reinCRUD application.
+
+= Eclipse =
+If you set-up your project using our archetype, you can easily generate an eclipse project with;
+{{{
+mvn eclipse:eclipse
+}}}
+and import it using _Existing projects into workspace_.
+
+Have a look at the [Compiling] page if you would like to use a Tomcat instance managed by eclipse.
