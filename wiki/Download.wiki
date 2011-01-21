@@ -1,0 +1,22 @@
+#summary One-sentence summary of this page.
+#labels Phase-Deploy,Featured
+
+= Download =
+
+You can download the reincrud release from our maven2 repository at:
+
+{{{
+<repository>
+   <id>acoveo</id>
+   <url>http://www.acoveo.com/maven2/repo</url>
+</repository>
+}}}
+
+or from the [http://www.vaadin.com vaadin] [http://vaadin.com/directory#addon/reincrud addon site] repository:
+
+{{{
+<repository>
+   <id>vaadin-addons</id>
+   <url>http://maven.vaadin.com/vaadin-addons</url>
+</repository>
+}}}
