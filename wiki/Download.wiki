@@ -63,3 +63,13 @@ mvn eclipse:eclipse
 and import it using _Existing projects into workspace_.
 
 Have a look at the [Compiling] page if you would like to use a Tomcat instance managed by eclipse.
+
+= Custom widgets =
+In order to use the pre-compiled widgetset in reincrud (with custom widgets) you have to extract the _VAADIN_ directory from the jar to _src/main/webapp/_. On Linux just run the following command from within your project directory:
+{{{
+unzip .m2/repository/org/acoveo/reincrud/1.1/reincrud-1.1.jar VAADIN* -d src/main/webapp/
+}}}
+
+In order to use the widgetset, you have to modify your src/main/webapp/WEB-INF/web.xml and set _org.acoveo.reincrud.gwt.widgetset.!ReinCrudWidgetset_ as the widgetset param-value of the vaadintest servlet. Then set _org.acoveo.reincrud.customGwtWidgetsEnabled=true_ in src/main/resources/config.properties and re-deploy to your Tomcat.
+
+You can also use your own widgetset and inherit from _org.acoveo.reincrud.gwt.widgetset.!ReinCrudWidgetset_. In that case, you need to use the GWT compiler, though. If you created your project using our archetype, there is an example _!VaadintestAppWidgetSet.gwt.xml_ widgetset in your project and you can enable the GWT compiler, by setting _activeByDefault_ to true within the _compile-widgetset_ profile of the pom.xml.
